@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find out which rides you can go on at Six Flags Great Adventure based on your height. A family-friendly ride eligibility guide for parents, kids, and teens.">
+    <title>My Ride Menu — Six Flags Great Adventure</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Design Tokens ===== */
+        :root {
+            --font: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --bg: #f4f6fb;
+            --surface: #ffffff;
+            --surface-raised: #f0f2f8;
+            --surface-hover: #e8ebf4;
+            --border: rgba(0,0,0,0.07);
+            --border-accent: rgba(0,0,0,0.12);
+
+            --text-primary: #1e1e2f;
+            --text-secondary: #555770;
+            --text-muted: #8e90aa;
+
+            --green: #16a34a;
+            --green-bg: rgba(22,163,74,0.08);
+            --green-border: rgba(22,163,74,0.25);
+            --green-glow: rgba(22,163,74,0.12);
+
+            --amber: #d97706;
+            --amber-bg: rgba(217,119,6,0.08);
+            --amber-border: rgba(217,119,6,0.25);
+            --amber-glow: rgba(217,119,6,0.12);
+
+            --red: #dc2626;
+            --red-bg: rgba(220,38,38,0.06);
+            --red-border: rgba(220,38,38,0.18);
+            --red-glow: rgba(220,38,38,0.08);
+
+            --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            --header-gradient: linear-gradient(160deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+
+            --shadow-card: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px var(--border);
+            --shadow-elevated: 0 8px 24px rgba(0,0,0,0.1);
+
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== Reset & Base ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            background: var(--header-gradient);
+            padding: 40px 20px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+
+        .park-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.15;
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            font-weight: 400;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* ===== Height Input Hero ===== */
+        .height-hero {
+            max-width: 560px;
+            margin: -28px auto 0;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .height-card {
+            background: var(--surface);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-xl);
+            padding: 28px 28px 24px;
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .height-prompt {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .height-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .height-value {
+            font-size: 4rem;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .height-unit {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+
+        .height-feet {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Slider */
+        .slider-container {
+            padding: 0 4px;
+            margin-bottom: 16px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--surface-raised);
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.35);
+            cursor: pointer;
+            transition: transform var(--transition);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.35);
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 4px 2px 0;
+        }
+
+        /* Quick height buttons */
+        .quick-heights {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-btn {
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .quick-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+
+        .quick-btn.active {
+            background: rgba(99,102,241,0.15);
+            border-color: rgba(99,102,241,0.4);
+            color: #a5b4fc;
+        }
+
+        /* ===== Main Content ===== */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+        }
+
+        /* Tabs */
+        .tabs-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 12px;
+            font-family: var(--font);
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn:hover {
+            background: var(--surface-raised);
+            border-color: var(--border-accent);
+        }
+
+        .tab-btn.active-green {
+            background: var(--green-bg);
+            border-color: var(--green);
+        }
+        .tab-btn.active-amber {
+            background: var(--amber-bg);
+            border-color: var(--amber);
+        }
+        .tab-btn.active-red {
+            background: var(--red-bg);
+            border-color: var(--red);
+        }
+
+        .tab-percent {
+            font-size: 1.8rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .tab-percent-green { color: var(--green); }
+        .tab-percent-amber { color: var(--amber); }
+        .tab-percent-red { color: var(--red); }
+
+        .tab-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .tab-btn.active-green .tab-label { color: var(--green); }
+        .tab-btn.active-amber .tab-label { color: var(--amber); }
+        .tab-btn.active-red .tab-label { color: var(--red); }
+
+        .tab-content {
+            animation: fadeInUp 0.3s ease both;
+        }
+
+        /* Filter toggle */
+        .filter-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 7px 14px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .filter-toggle:hover {
+            background: var(--surface-raised);
+            color: var(--text-primary);
+        }
+
+        .filter-toggle svg { width: 14px; height: 14px; }
+
+        /* Filter panel */
+        .filter-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0;
+            margin-bottom: 20px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.25s ease, padding 0.25s ease;
+        }
+
+        .filter-panel.open {
+            max-height: 200px;
+            opacity: 1;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color var(--transition);
+        }
+
+        .filter-group input::placeholder { color: var(--text-muted); }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            border-color: rgba(99,102,241,0.5);
+        }
+
+        .filter-group select option {
+            background: #ffffff;
+            color: var(--text-primary);
+        }
+
+        /* ===== Ride Zones (inside tabs) ===== */
+        .zone-count {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        /* Ride Cards Grid */
+        .ride-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+
+        .ride-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            transition: all var(--transition);
+            animation: fadeIn 0.3s ease both;
+        }
+
+        .ride-card:hover {
+            background: var(--surface-raised);
+            border-color: var(--border-accent);
+            transform: translateY(-1px);
+        }
+
+        .ride-card-green { border-left: 3px solid var(--green); }
+        .ride-card-amber { border-left: 3px solid var(--amber); }
+        .ride-card-red { border-left: 3px solid var(--red); opacity: 0.7; }
+        .ride-card-red:hover { opacity: 1; }
+
+        .ride-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .ride-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .ride-reason {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .ride-reason-motivation {
+            color: var(--amber);
+            font-weight: 600;
+        }
+
+        .ride-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6366f1;
+            text-decoration: none;
+            margin-top: 6px;
+            transition: color var(--transition);
+        }
+
+        .ride-link:hover {
+            color: #4f46e5;
+            text-decoration: underline;
+        }
+
+        .ride-link svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Thrill Badges */
+        .thrill-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .thrill-low { background: #dcfce7; color: #166534; }
+        .thrill-mild { background: #dbeafe; color: #1e40af; }
+        .thrill-moderate { background: #fef9c3; color: #854d0e; }
+        .thrill-high { background: #ffedd5; color: #9a3412; }
+        .thrill-aggressive { background: #fee2e2; color: #991b1b; }
+        .thrill-family { background: #f3e8ff; color: #6b21a8; }
+
+        /* ===== Why Box (inline on red cards) ===== */
+        .why-box {
+            background: var(--red-bg);
+            border: 1px solid var(--red-border);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            margin-top: 8px;
+        }
+
+        .why-row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 5px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .why-row:last-child { margin-bottom: 0; }
+
+        .why-icon {
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            margin-top: 1px;
+        }
+
+        .why-label {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .why-value {
+            color: var(--text-secondary);
+        }
+
+        .why-verdict {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--red-border);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .verdict-yes { color: #16a34a; }
+        .verdict-no { color: var(--red); }
+
+        /* ===== Collapsed Red Zone ===== */
+        .zone-collapse-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px 0;
+            transition: color var(--transition);
+        }
+
+        .zone-collapse-toggle:hover { color: var(--text-secondary); }
+
+        .zone-collapse-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform var(--transition);
+        }
+
+        .zone-collapse-toggle.expanded svg {
+            transform: rotate(180deg);
+        }
+
+        .zone-collapsible {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .zone-collapsible.expanded {
+            max-height: 5000px;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        /* ===== Empty State ===== */
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .header { padding: 32px 16px 40px; }
+            .height-hero { padding: 0 16px; }
+            .height-card { padding: 20px 20px 18px; }
+            .height-value { font-size: 3.2rem; }
+            .main-content { padding: 24px 16px 40px; }
+            .ride-grid { grid-template-columns: 1fr; }
+            .filter-row { grid-template-columns: 1fr; }
+            .stats-bar { flex-direction: column; align-items: flex-start; }
+            .quick-btn { padding: 5px 11px; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<div class="header">
+    <div class="header-content">
+        <div class="park-label">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+            Six Flags Great Adventure
+        </div>
+        <h1>My Ride Menu</h1>
+        <p class="header-subtitle">Enter your height and see exactly which rides are on your menu today</p>
+    </div>
+</div>
+
+<!-- ===== Height Input ===== -->
+<div class="height-hero">
+    <div class="height-card">
+        <div class="height-prompt">How tall are you?</div>
+        <div class="height-display">
+            <span class="height-value" id="heightDisplay">48</span><span class="height-unit">″</span>
+            <div class="height-feet" id="heightFeet">4 ft 0 in</div>
+        </div>
+        <div class="slider-container">
+            <input type="range" id="heightSlider" min="30" max="80" value="48" step="1" aria-label="Your height in inches">
+            <div class="slider-labels">
+                <span>30″</span>
+                <span>80″</span>
+            </div>
+        </div>
+        <div class="quick-heights" id="quickHeights">
+            <button class="quick-btn" data-height="36">36″</button>
+            <button class="quick-btn" data-height="42">42″</button>
+            <button class="quick-btn active" data-height="48">48″</button>
+            <button class="quick-btn" data-height="54">54″</button>
+            <button class="quick-btn" data-height="60">60″</button>
+            <button class="quick-btn" data-height="66">66″</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Main Content ===== -->
+<div class="main-content">
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <button class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/></svg>
+            Filters
+        </button>
+    </div>
+
+    <!-- Collapsible Filter Panel -->
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="searchName">Search Rides</label>
+                <input type="text" id="searchName" placeholder="e.g., Nitro, Batman…">
+            </div>
+            <div class="filter-group">
+                <label for="filterThrill">Thrill Level</label>
+                <select id="filterThrill">
+                    <option value="ALL">All Levels</option>
+                    <option value="Low Thrill">Low Thrill</option>
+                    <option value="Mild Thrill">Mild Thrill</option>
+                    <option value="Moderate Thrill">Moderate Thrill</option>
+                    <option value="High Thrill">High Thrill</option>
+                    <option value="Aggressive Thrill">Aggressive Thrill</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar" id="tabsBar" role="tablist"></div>
+
+    <!-- Tab Content -->
+    <div id="tabContent" aria-live="polite"></div>
+</div>
+
+<footer class="footer">
+    Height requirements may change. Always verify at the park. Not affiliated with Six Flags.
+</footer>
+
+<script>
+// ===== Ride Data (corrected from official sources) =====
+const ridesData = [
+    { id: 1, name: "Fender Benders", slug: "fender-benders", thrill: "Moderate Thrill", min: 54, max: null, companion: "Between 42\" – 54\"" },
+    { id: 2, name: "Giant Wheel", slug: "giant-wheel", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 3, name: "Scrambler", slug: "scrambler", thrill: "Moderate Thrill", min: 48, max: null, companion: "Between 36\" – 48\"" },
+    { id: 4, name: "Sky Screamer", slug: "skyscreamer", thrill: "High Thrill", min: 44, max: null, companion: "—" },
+    { id: 5, name: "Barrels O'Fun", slug: "barrels-o-fun", thrill: "High Thrill", min: 59, max: null, companion: "Between 48\" – 59\"" },
+    { id: 6, name: "Flying Scooters", slug: "flying-scooters", thrill: "Moderate Thrill", min: 44, max: null, companion: "Between 36\" – 44\"" },
+    { id: 7, name: "Hypno Twister", slug: "hypno-twister", thrill: "High Thrill", min: 42, max: null, companion: "—" },
+    { id: 8, name: "Slingshot", slug: "slingshot", thrill: "Aggressive Thrill", min: 44, max: null, companion: "—" },
+    { id: 9, name: "SUPERMAN™ The Ultimate Flight", slug: "superman-ultimate-flight", thrill: "Aggressive Thrill", min: 54, max: null, companion: "—" },
+    { id: 10, name: "Super Round Up", slug: "super-round-up", thrill: "Moderate Thrill", min: 42, max: null, companion: "—" },
+    { id: 11, name: "Wave Swinger", slug: "wave-swinger", thrill: "Moderate Thrill", min: 48, max: null, companion: "—" },
+    { id: 12, name: "Bugs Bunny Camp Carousel", slug: "bugs-bunny-camp-carousel", thrill: "Low Thrill", min: 36, max: 54, companion: "—" },
+    { id: 13, name: "Bugs Bunny Ranger Pilots", slug: "bugs-bunny-ranger-pilots", thrill: "Mild Thrill", min: 36, max: 54, companion: "—" },
+    { id: 14, name: "Daffy Duck Hot Air Balloons", slug: "daffy-duck-hot-air-balloons", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 15, name: "Porky Pig Camp Wagons", slug: "porky-pigs-camp-wagons", thrill: "Low Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 16, name: "Wile E. Coyote Canyon Blaster", slug: "wile-e-coyote-canyon-blaster", thrill: "Mild Thrill", min: 42, max: null, companion: "Between 36\" – 42\"" },
+    { id: 17, name: "Carousel", slug: "carousel", thrill: "Low Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 18, name: "Enchanted Teacups", slug: "enchanted-teacups", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 19, name: "Houdini's Great Escape", slug: "houdinis-great-escape", thrill: "Moderate Thrill", min: 48, max: null, companion: "Less than 48\"" },
+    { id: 20, name: "Medusa", slug: "medusa", thrill: "Aggressive Thrill", min: 54, max: null, companion: "—" },
+    { id: 21, name: "Runaway Mine Train", slug: "runaway-mine-train", thrill: "High Thrill", min: 44, max: null, companion: "—" },
+    { id: 22, name: "Safari Off-Road Adventure", slug: "safari-road-adventure", thrill: "Family", min: 54, max: null, companion: "Less than 54\"" },
+    { id: 23, name: "Saw Mill Log Flume", slug: "saw-mill-log-flume", thrill: "High Thrill", min: 46, max: null, companion: "Less than 46\"" },
+    { id: 24, name: "Air Safari", slug: "air-safari", thrill: "Mild Thrill", min: 48, max: null, companion: "Less than 48\"" },
+    { id: 25, name: "Barnstormer", slug: "barnstormer", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 26, name: "Bugaboo", slug: "bugaboo", thrill: "Low Thrill", min: null, max: 54, companion: "—" },
+    { id: 27, name: "Lil' Devil Coaster", slug: "lil-devil-coaster", thrill: "Moderate Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 28, name: "Raja's Rickshaw", slug: "rajas-rickshaws", thrill: "Mild Thrill", min: null, max: 48, companion: "—" },
+    { id: 29, name: "Sky Zooma", slug: "sky-zooma", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 30, name: "Storm Chaser", slug: "storm-chaser", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 31, name: "Tree Top Hopper", slug: "tree-top-hopper", thrill: "Mild Thrill", min: 36, max: 54, companion: "—" },
+    { id: 32, name: "Air Jumbo", slug: "air-jumbo", thrill: "Mild Thrill", min: 48, max: null, companion: "Less than 48\"" },
+    { id: 33, name: "Buccaneer", slug: "buccaneer", thrill: "Moderate Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 34, name: "HARLEY QUINN™ Crazy Train", slug: "harley-quinn-crazy-train", thrill: "Moderate Thrill", min: 48, max: null, companion: "Between 41\" – 48\"" },
+    { id: 35, name: "Jolly Roger", slug: "jolly-roger", thrill: "Moderate Thrill", min: 48, max: null, companion: "Less than 48\"" },
+    { id: 36, name: "Skull Mountain", slug: "skull-mountain", thrill: "Moderate Thrill", min: 48, max: 77, companion: "Between 44\" – 48\"" },
+    { id: 37, name: "THE JOKER", slug: "the-joker", thrill: "Aggressive Thrill", min: 48, max: 77, companion: "—" },
+    { id: 38, name: "JUSTICE LEAGUE™ Battle For METROPOLIS", slug: "justice-league-battle-for-metropolis", thrill: "Mild Thrill", min: 48, max: null, companion: "Between 42\" – 48\"" },
+    { id: 39, name: "THE FLASH™ Vertical Velocity", slug: "the-flash-vertical-velocity", thrill: "Aggressive Thrill", min: 48, max: 76, companion: "Between 48\" – 56\"" },
+    { id: 40, name: "WONDER WOMAN™ Lasso Of Truth", slug: "wonder-woman-lasso-of-truth", thrill: "Aggressive Thrill", min: 52, max: 80, companion: "—" },
+    { id: 41, name: "BATMAN™ The Ride", slug: "batman-the-ride", thrill: "Aggressive Thrill", min: 54, max: null, companion: "—" },
+    { id: 42, name: "THE DARK KNIGHT™ Coaster", slug: "dark-knight-coaster", thrill: "High Thrill", min: 48, max: null, companion: "Between 42\" – 48\"" },
+    { id: 43, name: "El Toro", slug: "el-toro", thrill: "Aggressive Thrill", min: 48, max: null, companion: "—" },
+    { id: 44, name: "Tango", slug: "tango", thrill: "Mild Thrill", min: 42, max: null, companion: "Less than 42\"" },
+    { id: 45, name: "Jersey Devil Coaster", slug: "jersey-devil-coaster", thrill: "Aggressive Thrill", min: 48, max: null, companion: "—" },
+    { id: 46, name: "Nitro", slug: "nitro", thrill: "Aggressive Thrill", min: 54, max: null, companion: "—" },
+    { id: 47, name: "Roaring Rapids", slug: "roaring-rapids", thrill: "High Thrill", min: 42, max: null, companion: "Between 36\" – 42\"" }
+];
+
+// ===== Eligibility Engine =====
+function getEligibility(ride, height) {
+    // 1. Too tall?
+    if (ride.max !== null && height > ride.max) {
+        return {
+            status: 'cant-ride',
+            reason: `Max height is ${ride.max}″ — you're too tall`,
+            tooltip: {
+                failed: `You are ${height}″ but the maximum height for this ride is ${ride.max}″.`,
+                change: `You would need to be ${ride.max}″ or shorter.`,
+                willHappen: false,
+                verdict: `You've outgrown this one — it's designed for smaller riders.`
+            }
+        };
+    }
+
+    // 2. No minimum? (kiddie rides with only max)
+    if (ride.min === null) {
+        return { status: 'ride-alone', reason: 'No height minimum' };
+    }
+
+    // 3. Tall enough to ride alone
+    if (height >= ride.min) {
+        return { status: 'ride-alone', reason: '' };
+    }
+
+    // 4. Below ride-alone minimum — check companion rules
+    if (ride.companion === '—') {
+        const gap = ride.min - height;
+        return {
+            status: 'cant-ride',
+            reason: `Need to be ${ride.min}″`,
+            gap: gap,
+            tooltip: {
+                failed: `Minimum height is ${ride.min}″ to ride. You are ${height}″ (${gap}″ short).`,
+                change: `Grow ${gap} more inch${gap !== 1 ? 'es' : ''} to reach ${ride.min}″.`,
+                willHappen: true,
+                verdict: `Keep growing — you'll get there! 🌱`
+            }
+        };
+    }
+
+    // Parse "Less than X" — anyone under X needs companion, no lower bound
+    const lessMatch = ride.companion.match(/Less than (\d+)/);
+    if (lessMatch) {
+        return {
+            status: 'with-companion',
+            reason: `Under ${lessMatch[1]}″ needs a supervising companion`
+        };
+    }
+
+    // Parse "Between X – Y" — rider must be at least X to ride with companion
+    const betweenMatch = ride.companion.match(/Between (\d+).*?(\d+)/);
+    if (betweenMatch) {
+        const compMin = parseInt(betweenMatch[1]);
+        if (height >= compMin) {
+            return {
+                status: 'with-companion',
+                reason: `${compMin}″–${betweenMatch[2]}″ needs a supervising companion`
+            };
+        } else {
+            const gap = compMin - height;
+            return {
+                status: 'cant-ride',
+                reason: `Need to be at least ${compMin}″`,
+                gap: gap,
+                tooltip: {
+                    failed: `Minimum height is ${compMin}″ even with a companion. You are ${height}″ (${gap}″ short).`,
+                    change: `Grow ${gap} more inch${gap !== 1 ? 'es' : ''} to reach ${compMin}″, then you can ride with a supervising companion. At ${ride.min}″ you can ride alone.`,
+                    willHappen: true,
+                    verdict: `Keep growing — you'll get there! 🌱`
+                }
+            };
+        }
+    }
+
+    // Fallback
+    const fallbackGap = ride.min - height;
+    return {
+        status: 'cant-ride',
+        reason: `Need to be ${ride.min}″`,
+        gap: fallbackGap,
+        tooltip: {
+            failed: `Minimum height is ${ride.min}″. You are ${height}″ (${fallbackGap}″ short).`,
+            change: `Grow ${fallbackGap} more inch${fallbackGap !== 1 ? 'es' : ''} to reach ${ride.min}″.`,
+            willHappen: true,
+            verdict: `Keep growing — you'll get there! 🌱`
+        }
+    };
+}
+
+// ===== Thrill Badge Helper =====
+function getThrillClass(thrill) {
+    if (thrill.includes('Low')) return 'thrill-low';
+    if (thrill.includes('Mild')) return 'thrill-mild';
+    if (thrill.includes('Moderate')) return 'thrill-moderate';
+    if (thrill.includes('High')) return 'thrill-high';
+    if (thrill.includes('Aggressive')) return 'thrill-aggressive';
+    if (thrill === 'Family') return 'thrill-family';
+    return 'thrill-mild';
+}
+
+function getThrillLabel(thrill) {
+    return thrill.replace(' Thrill', '');
+}
+
+// ===== Inches → Feet/Inches =====
+function toFeetInches(inches) {
+    const ft = Math.floor(inches / 12);
+    const inn = inches % 12;
+    return `${ft} ft ${inn} in`;
+}
+
+// ===== Render =====
+function renderWhyBox(tooltip) {
+    if (!tooltip) return '';
+    const verdictClass = tooltip.willHappen ? 'verdict-yes' : 'verdict-no';
+    const verdictIcon = tooltip.willHappen ? '✅' : '⛔';
+    return `
+        <div class="why-box">
+            <div class="why-row">
+                <span class="why-icon">🚫</span>
+                <div><span class="why-label">Why: </span><span class="why-value">${tooltip.failed}</span></div>
+            </div>
+            <div class="why-row">
+                <span class="why-icon">🎯</span>
+                <div><span class="why-label">What needs to change: </span><span class="why-value">${tooltip.change}</span></div>
+            </div>
+            <div class="why-verdict ${verdictClass}">
+                ${verdictIcon} ${tooltip.verdict}
+            </div>
+        </div>
+    `;
+}
+
+function renderRideCard(ride, eligibility, zone) {
+    const thrillClass = getThrillClass(ride.thrill);
+    const thrillLabel = getThrillLabel(ride.thrill);
+
+    let reasonHTML = '';
+    if (zone === 'ride-alone' && ride.min) {
+        reasonHTML = `<div class="ride-reason">Min ${ride.min}″ to ride alone</div>`;
+    } else if (zone === 'with-companion') {
+        reasonHTML = `<div class="ride-reason">🧑‍🤝‍🧑 ${eligibility.reason}</div>`;
+    } else if (zone === 'cant-ride') {
+        if (eligibility.gap) {
+            reasonHTML = `<div class="ride-reason">${eligibility.reason} — <span class="ride-reason-motivation">${eligibility.gap}″ to go!</span></div>`;
+        } else {
+            reasonHTML = `<div class="ride-reason">${eligibility.reason}</div>`;
+        }
+        reasonHTML += renderWhyBox(eligibility.tooltip);
+    }
+
+    const rideUrl = `https://www.sixflags.com/greatadventure/attractions/${ride.slug}`;
+
+    return `
+        <div class="ride-card ride-card-${zone}">
+            <div class="ride-card-top">
+                <span class="ride-name">${ride.name}</span>
+                <span class="thrill-badge ${thrillClass}">${thrillLabel}</span>
+            </div>
+            ${reasonHTML}
+            <a class="ride-link" href="${rideUrl}" target="_blank" rel="noopener noreferrer">
+                More info
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/></svg>
+            </a>
+        </div>
+    `;
+}
+
+let activeTab = 'green';
+let lastResults = { green: [], amber: [], red: [], greenE: [], amberE: [], redE: [] };
+
+function switchTab(tab) {
+    activeTab = tab;
+    renderActiveTab();
+    // Update tab button active states
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        const btnTab = btn.dataset.tab;
+        btn.classList.remove('active-green', 'active-amber', 'active-red');
+        if (btnTab === tab) {
+            btn.classList.add(`active-${tab}`);
+        }
+    });
+}
+
+function renderActiveTab() {
+    const container = document.getElementById('tabContent');
+    const { green, amber, red, greenE, amberE, redE } = lastResults;
+
+    let rides, eligibilities, zone;
+    if (activeTab === 'green') {
+        rides = green; eligibilities = greenE; zone = 'ride-alone';
+    } else if (activeTab === 'amber') {
+        rides = amber; eligibilities = amberE; zone = 'with-companion';
+    } else {
+        rides = red; eligibilities = redE; zone = 'cant-ride';
+    }
+
+    if (rides.length === 0) {
+        container.innerHTML = '<div class="empty-state">No rides in this category.</div>';
+        return;
+    }
+
+    const colorMap = { 'ride-alone': 'green', 'with-companion': 'amber', 'cant-ride': 'red' };
+    const colorKey = colorMap[zone] || activeTab;
+    const cardsHTML = rides.map((ride, i) => renderRideCard(ride, eligibilities[i], colorKey)).join('');
+
+    container.innerHTML = `
+        <div class="tab-content">
+            <div class="zone-count">${rides.length} ride${rides.length !== 1 ? 's' : ''}</div>
+            <div class="ride-grid">${cardsHTML}</div>
+        </div>
+    `;
+}
+
+function update() {
+    const height = parseInt(document.getElementById('heightSlider').value);
+    const nameQuery = document.getElementById('searchName').value.toLowerCase();
+    const thrillQuery = document.getElementById('filterThrill').value;
+
+    // Update display
+    document.getElementById('heightDisplay').textContent = height;
+    document.getElementById('heightFeet').textContent = toFeetInches(height);
+
+    // Update quick-height buttons
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.height) === height);
+    });
+
+    // Compute eligibility for all rides
+    const green = [], amber = [], red = [];
+    const greenE = [], amberE = [], redE = [];
+
+    ridesData.forEach(ride => {
+        // Apply secondary filters
+        if (nameQuery && !ride.name.toLowerCase().includes(nameQuery)) return;
+        if (thrillQuery !== 'ALL' && ride.thrill !== thrillQuery) return;
+
+        const elig = getEligibility(ride, height);
+
+        if (elig.status === 'ride-alone') {
+            green.push(ride); greenE.push(elig);
+        } else if (elig.status === 'with-companion') {
+            amber.push(ride); amberE.push(elig);
+        } else {
+            red.push(ride); redE.push(elig);
+        }
+    });
+
+    lastResults = { green, amber, red, greenE, amberE, redE };
+
+    const total = ridesData.length;
+    const greenPct = Math.round((green.length / total) * 100);
+    const amberPct = Math.round((amber.length / total) * 100);
+    const redPct = Math.round((red.length / total) * 100);
+
+    // Render tabs
+    const tabsBar = document.getElementById('tabsBar');
+    tabsBar.innerHTML = `
+        <button class="tab-btn ${activeTab === 'green' ? 'active-green' : ''}" data-tab="green" role="tab" aria-selected="${activeTab === 'green'}" onclick="switchTab('green')">
+            <span class="tab-percent tab-percent-green">${greenPct}%</span>
+            <span class="tab-label">Can Ride Solo</span>
+        </button>
+        <button class="tab-btn ${activeTab === 'amber' ? 'active-amber' : ''}" data-tab="amber" role="tab" aria-selected="${activeTab === 'amber'}" onclick="switchTab('amber')">
+            <span class="tab-percent tab-percent-amber">${amberPct}%</span>
+            <span class="tab-label">With Companion</span>
+        </button>
+        <button class="tab-btn ${activeTab === 'red' ? 'active-red' : ''}" data-tab="red" role="tab" aria-selected="${activeTab === 'red'}" onclick="switchTab('red')">
+            <span class="tab-percent tab-percent-red">${redPct}%</span>
+            <span class="tab-label">Can't Ride</span>
+        </button>
+    `;
+
+    renderActiveTab();
+}
+
+// ===== Event Listeners =====
+const slider = document.getElementById('heightSlider');
+slider.addEventListener('input', update);
+
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        slider.value = btn.dataset.height;
+        update();
+    });
+});
+
+document.getElementById('filterToggle').addEventListener('click', () => {
+    const panel = document.getElementById('filterPanel');
+    const btn = document.getElementById('filterToggle');
+    const isOpen = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+});
+
+document.getElementById('searchName').addEventListener('input', update);
+document.getElementById('filterThrill').addEventListener('change', update);
+
+// Restore last height from localStorage
+const savedHeight = localStorage.getItem('sf-rider-height');
+if (savedHeight) {
+    slider.value = savedHeight;
+}
+
+slider.addEventListener('change', () => {
+    localStorage.setItem('sf-rider-height', slider.value);
+});
+
+// Initial render
+update();
+</script>
+
+</body>
+</html>
