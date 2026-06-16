@@ -937,11 +937,11 @@ function renderRideCard(ride, eligibility, zone) {
     const thrillLabel = getThrillLabel(ride.thrill);
 
     let reasonHTML = '';
-    if (zone === 'ride-alone' && ride.min) {
+    if (zone === 'green' && ride.min) {
         reasonHTML = `<div class="ride-reason">Min ${ride.min}″ to ride alone</div>`;
-    } else if (zone === 'with-companion') {
+    } else if (zone === 'amber') {
         reasonHTML = `<div class="ride-reason">🧑‍🤝‍🧑 ${eligibility.reason}</div>`;
-    } else if (zone === 'cant-ride') {
+    } else if (zone === 'red') {
         if (eligibility.gap) {
             reasonHTML = `<div class="ride-reason">${eligibility.reason} — <span class="ride-reason-motivation">${eligibility.gap}″ to go!</span></div>`;
         } else {
