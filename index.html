@@ -341,54 +341,58 @@
             animation: fadeInUp 0.3s ease both;
         }
 
-        /* Filter toggle */
-        .filter-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 7px 14px;
-            font-family: var(--font);
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-
-        .filter-toggle:hover {
-            background: var(--surface-raised);
-            color: var(--text-primary);
-        }
-
-        .filter-toggle svg { width: 14px; height: 14px; }
-
         /* Filter panel */
         .filter-panel {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 0;
-            margin-bottom: 20px;
-            overflow: hidden;
-            max-height: 0;
-            opacity: 0;
-            transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.25s ease, padding 0.25s ease;
-        }
-
-        .filter-panel.open {
-            max-height: 200px;
-            opacity: 1;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 20px;
         }
 
         .filter-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .thrill-filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .thrill-btn {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-family: var(--font);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .thrill-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .thrill-btn.inactive {
+            background: var(--surface-raised) !important;
+            color: var(--text-muted) !important;
+            border: 1px solid var(--border) !important;
+            opacity: 0.5;
         }
 
         .filter-group label {
@@ -705,15 +709,7 @@
 <!-- ===== Main Content ===== -->
 <div class="main-content">
 
-    <!-- Stats Bar -->
-    <div class="stats-bar">
-        <button class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filterPanel">
-            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/></svg>
-            Filters
-        </button>
-    </div>
-
-    <!-- Collapsible Filter Panel -->
+    <!-- Filters Panel (Always Open) -->
     <div class="filter-panel" id="filterPanel">
         <div class="filter-row">
             <div class="filter-group">
@@ -721,15 +717,15 @@
                 <input type="text" id="searchName" placeholder="e.g., Nitro, Batman…">
             </div>
             <div class="filter-group">
-                <label for="filterThrill">Thrill Level</label>
-                <select id="filterThrill">
-                    <option value="ALL">All Levels</option>
-                    <option value="Low Thrill">Low Thrill</option>
-                    <option value="Mild Thrill">Mild Thrill</option>
-                    <option value="Moderate Thrill">Moderate Thrill</option>
-                    <option value="High Thrill">High Thrill</option>
-                    <option value="Aggressive Thrill">Aggressive Thrill</option>
-                </select>
+                <label>Filter by Thrill Level</label>
+                <div class="thrill-filter-group" id="thrillFilterGroup">
+                    <button type="button" class="thrill-btn thrill-low" data-thrill="Low Thrill">Low</button>
+                    <button type="button" class="thrill-btn thrill-mild" data-thrill="Mild Thrill">Mild</button>
+                    <button type="button" class="thrill-btn thrill-moderate" data-thrill="Moderate Thrill">Moderate</button>
+                    <button type="button" class="thrill-btn thrill-high" data-thrill="High Thrill">High</button>
+                    <button type="button" class="thrill-btn thrill-aggressive" data-thrill="Aggressive Thrill">Aggressive</button>
+                    <button type="button" class="thrill-btn thrill-family" data-thrill="Family">Family</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1013,10 +1009,11 @@ function renderActiveTab() {
     `;
 }
 
+const selectedThrills = new Set(['Low Thrill', 'Mild Thrill', 'Moderate Thrill', 'High Thrill', 'Aggressive Thrill', 'Family']);
+
 function update() {
     const height = parseInt(document.getElementById('heightSlider').value);
     const nameQuery = document.getElementById('searchName').value.toLowerCase();
-    const thrillQuery = document.getElementById('filterThrill').value;
 
     // Update display
     document.getElementById('heightDisplay').textContent = height;
@@ -1034,7 +1031,7 @@ function update() {
     ridesData.forEach(ride => {
         // Apply secondary filters
         if (nameQuery && !ride.name.toLowerCase().includes(nameQuery)) return;
-        if (thrillQuery !== 'ALL' && ride.thrill !== thrillQuery) return;
+        if (!selectedThrills.has(ride.thrill)) return;
 
         const elig = getEligibility(ride, height);
 
@@ -1085,15 +1082,44 @@ document.querySelectorAll('.quick-btn').forEach(btn => {
     });
 });
 
-document.getElementById('filterToggle').addEventListener('click', () => {
-    const panel = document.getElementById('filterPanel');
-    const btn = document.getElementById('filterToggle');
-    const isOpen = panel.classList.toggle('open');
-    btn.setAttribute('aria-expanded', isOpen);
-});
-
 document.getElementById('searchName').addEventListener('input', update);
-document.getElementById('filterThrill').addEventListener('change', update);
+
+const thrillButtons = document.querySelectorAll('.thrill-btn');
+thrillButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const thrill = btn.dataset.thrill;
+        
+        // If all are currently selected, set selection to only this one
+        const allSelected = Array.from(thrillButtons).every(b => !b.classList.contains('inactive'));
+        
+        if (allSelected) {
+            thrillButtons.forEach(b => {
+                if (b !== btn) {
+                    b.classList.add('inactive');
+                    selectedThrills.delete(b.dataset.thrill);
+                }
+            });
+        } else {
+            // Normal toggle
+            if (selectedThrills.has(thrill)) {
+                selectedThrills.delete(thrill);
+                btn.classList.add('inactive');
+            } else {
+                selectedThrills.add(thrill);
+                btn.classList.remove('inactive');
+            }
+            
+            // If none are selected now, reset to all selected
+            if (selectedThrills.size === 0) {
+                thrillButtons.forEach(b => {
+                    b.classList.remove('inactive');
+                    selectedThrills.add(b.dataset.thrill);
+                });
+            }
+        }
+        update();
+    });
+});
 
 // Restore last height from localStorage
 const savedHeight = localStorage.getItem('sf-rider-height');
