@@ -264,9 +264,193 @@
 
         /* ===== Main Content ===== */
         .main-content {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 32px 20px 60px;
+        }
+
+        /* ===== Main Layout Grid ===== */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr 340px;
+            }
+        }
+
+        /* ===== Planner Card ===== */
+        .planner-card {
+            background: var(--surface);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-card);
+            position: sticky;
+            top: 24px;
+        }
+
+        .planner-header {
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .planner-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .planner-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .planner-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .planner-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            gap: 8px;
+            transition: all var(--transition);
+        }
+
+        .planner-item:hover {
+            border-color: var(--border-accent);
+            background: var(--surface-hover);
+        }
+
+        .planner-item-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .planner-item-order {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #6366f1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .planner-item-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .planner-item-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .planner-action-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            transition: all var(--transition);
+        }
+
+        .planner-action-btn:hover {
+            background: var(--surface-raised);
+            color: var(--text-primary);
+            border-color: var(--border-accent);
+        }
+
+        .planner-action-btn.btn-remove:hover {
+            background: var(--red-bg);
+            color: var(--red);
+            border-color: var(--red-border);
+        }
+
+        .planner-empty {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-md);
+        }
+
+        .planner-empty-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* ===== Ride Card Plan Actions ===== */
+        .ride-card-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .plan-toggle-btn {
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-family: var(--font);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .plan-toggle-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-accent);
+            color: var(--text-primary);
+        }
+
+        .plan-toggle-btn.planned {
+            background: rgba(99,102,241,0.1);
+            border-color: rgba(99,102,241,0.3);
+            color: #4f46e5;
+        }
+
+        .plan-toggle-btn.planned:hover {
+            background: var(--red-bg);
+            border-color: var(--red-border);
+            color: var(--red);
         }
 
         /* Tabs */
@@ -708,33 +892,42 @@
 
 <!-- ===== Main Content ===== -->
 <div class="main-content">
-
-    <!-- Filters Panel (Always Open) -->
-    <div class="filter-panel" id="filterPanel">
-        <div class="filter-row">
-            <div class="filter-group">
-                <label for="searchName">Search Rides</label>
-                <input type="text" id="searchName" placeholder="e.g., Nitro, Batman…">
-            </div>
-            <div class="filter-group">
-                <label>Filter by Thrill Level</label>
-                <div class="thrill-filter-group" id="thrillFilterGroup">
-                    <button type="button" class="thrill-btn thrill-low" data-thrill="Low Thrill">Low</button>
-                    <button type="button" class="thrill-btn thrill-mild" data-thrill="Mild Thrill">Mild</button>
-                    <button type="button" class="thrill-btn thrill-moderate" data-thrill="Moderate Thrill">Moderate</button>
-                    <button type="button" class="thrill-btn thrill-high" data-thrill="High Thrill">High</button>
-                    <button type="button" class="thrill-btn thrill-aggressive" data-thrill="Aggressive Thrill">Aggressive</button>
-                    <button type="button" class="thrill-btn thrill-family" data-thrill="Family">Family</button>
+    <div class="main-layout">
+        <!-- Rides Section -->
+        <div class="rides-section">
+            <!-- Filters Panel (Always Open) -->
+            <div class="filter-panel" id="filterPanel">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="searchName">Search Rides</label>
+                        <input type="text" id="searchName" placeholder="e.g., Nitro, Batman…">
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter by Thrill Level</label>
+                        <div class="thrill-filter-group" id="thrillFilterGroup">
+                            <button type="button" class="thrill-btn thrill-low" data-thrill="Low Thrill">Low</button>
+                            <button type="button" class="thrill-btn thrill-mild" data-thrill="Mild Thrill">Mild</button>
+                            <button type="button" class="thrill-btn thrill-moderate" data-thrill="Moderate Thrill">Moderate</button>
+                            <button type="button" class="thrill-btn thrill-high" data-thrill="High Thrill">High</button>
+                            <button type="button" class="thrill-btn thrill-aggressive" data-thrill="Aggressive Thrill">Aggressive</button>
+                            <button type="button" class="thrill-btn thrill-family" data-thrill="Family">Family</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Tabs -->
+            <div class="tabs-bar" id="tabsBar" role="tablist"></div>
+
+            <!-- Tab Content -->
+            <div id="tabContent" aria-live="polite"></div>
+        </div>
+
+        <!-- Planner Section -->
+        <div class="planner-section" id="plannerSection">
+            <!-- Rendered dynamically -->
         </div>
     </div>
-
-    <!-- Tabs -->
-    <div class="tabs-bar" id="tabsBar" role="tablist"></div>
-
-    <!-- Tab Content -->
-    <div id="tabContent" aria-live="polite"></div>
 </div>
 
 <footer class="footer">
@@ -928,6 +1121,116 @@ function renderWhyBox(tooltip) {
     `;
 }
 
+// ===== Day Trip Planner State & Logic =====
+let ridePlan = [];
+try {
+    const savedPlan = localStorage.getItem('sf-ride-plan');
+    if (savedPlan) {
+        ridePlan = JSON.parse(savedPlan);
+    }
+} catch (e) {
+    console.error('Failed to parse ride plan:', e);
+}
+
+function savePlan() {
+    localStorage.setItem('sf-ride-plan', JSON.stringify(ridePlan));
+}
+
+function getOrdinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function togglePlan(rideId) {
+    const index = ridePlan.indexOf(rideId);
+    if (index > -1) {
+        ridePlan.splice(index, 1);
+    } else {
+        ridePlan.push(rideId);
+    }
+    savePlan();
+    update();
+}
+
+function removePlanItem(rideId) {
+    const index = ridePlan.indexOf(rideId);
+    if (index > -1) {
+        ridePlan.splice(index, 1);
+        savePlan();
+        update();
+    }
+}
+
+function movePlanItem(index, direction) {
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= ridePlan.length) return;
+    
+    // Swap items
+    const temp = ridePlan[index];
+    ridePlan[index] = ridePlan[newIndex];
+    ridePlan[newIndex] = temp;
+    
+    savePlan();
+    update();
+}
+
+function getPlanOrder(rideId) {
+    const index = ridePlan.indexOf(rideId);
+    return index > -1 ? getOrdinal(index + 1) : '';
+}
+
+function renderPlanner() {
+    const container = document.getElementById('plannerSection');
+    if (ridePlan.length === 0) {
+        container.innerHTML = `
+            <div class="planner-card">
+                <div class="planner-header">
+                    <h3 class="planner-title">📅 Day Trip Planner</h3>
+                    <p class="planner-subtitle">Select rides below to build your custom itinerary!</p>
+                </div>
+                <div class="planner-empty">
+                    <span class="planner-empty-icon">🎡</span>
+                    No rides added to your itinerary yet. Click <strong>+ Add to Plan</strong> on any ride card.
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    const itemsHTML = ridePlan.map((rideId, index) => {
+        const ride = ridesData.find(r => r.id === rideId);
+        if (!ride) return '';
+        const orderLabel = getOrdinal(index + 1);
+        
+        return `
+            <div class="planner-item">
+                <div class="planner-item-info">
+                    <span class="planner-item-order">${orderLabel} Ride</span>
+                    <span class="planner-item-name" title="${ride.name}">${ride.name}</span>
+                </div>
+                <div class="planner-item-actions">
+                    <button class="planner-action-btn" title="Move Up" onclick="movePlanItem(${index}, -1)" ${index === 0 ? 'disabled' : ''}>▲</button>
+                    <button class="planner-action-btn" title="Move Down" onclick="movePlanItem(${index}, 1)" ${index === ridePlan.length - 1 ? 'disabled' : ''}>▼</button>
+                    <button class="planner-action-btn btn-remove" title="Remove" onclick="removePlanItem(${rideId})">✕</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="planner-card">
+            <div class="planner-header">
+                <h3 class="planner-title">📅 Day Trip Planner</h3>
+                <p class="planner-subtitle">${ridePlan.length} ride${ridePlan.length !== 1 ? 's' : ''} planned in order</p>
+            </div>
+            <div class="planner-list">
+                ${itemsHTML}
+            </div>
+        </div>
+    `;
+}
+
 function renderRideCard(ride, eligibility, zone) {
     const thrillClass = getThrillClass(ride.thrill);
     const thrillLabel = getThrillLabel(ride.thrill);
@@ -947,6 +1250,8 @@ function renderRideCard(ride, eligibility, zone) {
     }
 
     const rideUrl = `https://www.sixflags.com/greatadventure/attractions/${ride.slug}`;
+    const planned = ridePlan.includes(ride.id);
+    const planOrder = getPlanOrder(ride.id);
 
     return `
         <div class="ride-card ride-card-${zone}">
@@ -955,10 +1260,17 @@ function renderRideCard(ride, eligibility, zone) {
                 <span class="thrill-badge ${thrillClass}">${thrillLabel}</span>
             </div>
             ${reasonHTML}
-            <a class="ride-link" href="${rideUrl}" target="_blank" rel="noopener noreferrer">
-                More info
-                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/></svg>
-            </a>
+            <div class="ride-card-actions">
+                <a class="ride-link" href="${rideUrl}" target="_blank" rel="noopener noreferrer">
+                    More info
+                    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"/></svg>
+                </a>
+                ${(zone === 'green' || zone === 'amber') ? `
+                    <button class="plan-toggle-btn ${planned ? 'planned' : ''}" onclick="togglePlan(${ride.id})">
+                        ${planned ? `✓ Planned (${planOrder})` : `+ Add to Plan`}
+                    </button>
+                ` : ''}
+            </div>
         </div>
     `;
 }
@@ -1069,6 +1381,7 @@ function update() {
     `;
 
     renderActiveTab();
+    renderPlanner();
 }
 
 // ===== Event Listeners =====
